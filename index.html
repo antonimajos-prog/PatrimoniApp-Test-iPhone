@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#102a24">
+  <meta name="description" content="Gestió patrimonial privada i local">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>Patrimoni</title>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="#"><span class="brand-mark">P</span><span>patrimoni<small>Control personal</small></span></a><div class="top-actions"><span id="connection" class="status"><i></i> Dades locals</span><button class="icon-button" id="backupBtn" aria-label="Còpia de seguretat" title="Còpia de seguretat">↥</button></div></header>
+  <main class="shell" id="homeView">
+    <section class="welcome"><div><p class="eyebrow">RESUM DEL PATRIMONI</p><h1>El teu patrimoni,<br><em>sempre al dia.</em></h1><p class="muted">Una visió clara de les teves finances, guardada al teu dispositiu.</p></div><button class="button primary" id="newProductBtn"><span>＋</span> Afegir producte</button></section>
+    <section class="summary-grid">
+      <article class="summary-card main-card"><div class="card-label">Patrimoni total <span>↗</span></div><div id="totalValue" class="big-value">0,00 €</div><div id="assetCount" class="card-foot">0 productes actius</div><div class="sparkline" aria-hidden="true"><svg viewBox="0 0 280 55" preserveAspectRatio="none"><path d="M0 45 C20 42 25 28 48 34 S78 39 98 25 125 33 146 19 168 28 188 13 220 24 241 9 260 17 280 3"/></svg></div></article>
+      <article class="summary-card"><div class="card-label">Titulars</div><div id="ownerCount" class="metric-value">0</div><div class="card-foot">Persones i titulars conjunts</div></article>
+      <article class="summary-card"><div class="card-label">Entitats</div><div id="institutionCount" class="metric-value">0</div><div class="card-foot">Bancs i gestores</div></article>
+    </section>
+    <section class="panel aggregate-panel">
+      <div class="panel-heading"><div><p class="eyebrow">FASE 2 · EUR</p><h2>Rendibilitat del patrimoni</h2></div><div class="aggregate-controls"><select id="aggregateScope" aria-label="Àmbit de rendibilitat"><option value="global">Patrimoni global</option><option value="holder">Per titular</option></select><select id="aggregateOwner" aria-label="Titular per calcular" class="hidden"></select><select id="aggregatePeriod" aria-label="Període"><option value="since">Des de l’inici</option><option value="year">Any natural actual</option><option value="custom">Període personalitzat</option></select></div></div>
+      <div id="aggregateDates" class="aggregate-dates hidden"><label>Des de <input id="aggregateStart" type="date"></label><label>Fins a <input id="aggregateEnd" type="date"></label><button id="applyAggregateDates" class="button subtle" type="button">Aplica</button></div>
+      <div id="aggregateResult" class="aggregate-result"><p class="performance-message">Preparant el càlcul…</p></div>
+      <details class="fx-manager"><summary>Tipus de canvi manuals</summary><p class="muted">Registra EUR equivalents a una unitat de moneda estrangera. Cal una cotització exacta per a cada data necessària; no s’interpola.</p><form id="fxForm" class="fx-form"><label>Moneda<select id="fxCurrency" required></select></label><label>Data<input id="fxDate" type="date" required></label><label>EUR per 1 unitat<input id="fxRate" type="number" min="0.00000001" step="any" required></label><label>Observacions<input id="fxNotes" type="text"></label><button class="button primary" type="submit">Desa el canvi</button></form><div id="fxList" class="fx-list"></div></details>
+    </section>
+    <section class="content-grid">
+      <article class="panel products-panel"><div class="panel-heading"><div><p class="eyebrow">CARTERA</p><h2>Els teus productes</h2></div><div class="filters"><select id="ownerFilter" aria-label="Filtra per titular"><option value="">Tots els titulars</option></select><button class="button subtle" id="addValueBtn">＋ Valoració</button></div></div><div id="productList" class="product-list"></div></article>
+      <aside class="side-column"><article class="panel"><div class="panel-heading compact"><div><p class="eyebrow">ORGANITZACIÓ</p><h2>Titulars</h2></div><button class="round-add" data-create="owner" aria-label="Afegir titular">＋</button></div><div id="ownerList" class="simple-list"></div></article>
+      <article class="panel"><div class="panel-heading compact"><div><p class="eyebrow">ORGANITZACIÓ</p><h2>Entitats</h2></div><button class="round-add" data-create="institution" aria-label="Afegir entitat">＋</button></div><div id="institutionList" class="simple-list"></div></article>
+      <article class="privacy-note"><span class="lock">◈</span><div><strong>Privadesa per defecte</strong><p>Les dades es desen només en aquest dispositiu. No es connecta amb bancs.</p></div></article></aside>
+    </section>
+    <footer>Les valoracions mostren el valor patrimonial, no la rendibilitat de la inversió.</footer>
+  </main>
+  <main class="shell detail-shell hidden" id="detailView">
+    <button class="back-link" id="backHome">← <span>Tots els productes</span></button>
+    <div id="productDetail"></div>
+  </main>
+  <dialog id="editor"><form id="editorForm" method="dialog"><div class="modal-head"><div><p class="eyebrow" id="formEyebrow">NOU REGISTRE</p><h2 id="formTitle">Afegir producte</h2></div><button type="button" class="close" id="closeModal" aria-label="Tanca">×</button></div><div id="formFields" class="form-fields"></div><div class="modal-actions"><button type="button" class="button subtle" id="cancelModal">Cancel·la</button><button type="submit" class="button primary">Desa</button></div></form></dialog>
+  <dialog id="historyDialog"><div class="modal-head"><div><p class="eyebrow">HISTÒRIC DE VALORACIONS</p><h2 id="historyTitle">Producte</h2></div><button class="close" id="closeHistory" aria-label="Tanca">×</button></div><div id="historyContent"></div></dialog>
+  <dialog id="movementUpdateDialog"><div class="modal-head"><div><p class="eyebrow">ACTUALITZACIÓ DEL SALDO</p><h2>Vols actualitzar també el saldo?</h2></div></div><p class="muted">Vols actualitzar també el saldo del producte tenint en compte aquest moviment?</p><div class="modal-actions"><button type="button" class="button subtle" id="movementNo">No, només desar el moviment</button><button type="button" class="button primary" id="movementYes">Sí, revisar el saldo</button></div></dialog>
+  <dialog id="backupDialog"><div class="modal-head"><div><p class="eyebrow">LES TEVES DADES</p><h2>Còpia de seguretat</h2></div><button class="close" id="closeBackup" aria-label="Tanca">×</button></div><p class="muted">Exporta una còpia local o importa una còpia prèvia. La importació reemplaça totes les dades actuals.</p><div class="backup-actions"><button class="button primary" id="exportBtn">↥ Exporta JSON</button><label class="button subtle file-button">↧ Importa JSON<input id="importFile" type="file" accept="application/json,.json" hidden></label></div><button id="loadDemo" class="text-button">Carrega dades d’exemple fictícies</button></dialog>
+  <div id="toast" role="status" class="toast"></div>
+  <script src="returns.js"></script>
+  <script src="aggregate.js"></script>
+  <script src="database.js"></script>
+  <script src="backup.js"></script>
+  <script src="movement-records.js"></script>
+  <script src="diagnostics-ui.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
